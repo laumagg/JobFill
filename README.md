@@ -47,4 +47,8 @@ This extension is not on the Chrome Web Store. Install it manually:
 - Rich text editors (e.g. Quill, TipTap) are not supported
 
 
+---
+
+## License
+
 MIT
