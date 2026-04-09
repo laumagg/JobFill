@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JobFill — Profile</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f0f11;
+      --surface: #1a1a1f;
+      --surface2: #212128;
+      --border: #2a2a32;
+      --border-focus: #6ee7b7;
+      --accent: #6ee7b7;
+      --accent-dim: #6ee7b718;
+      --text: #e8e8ed;
+      --muted: #6b6b7a;
+      --danger: #f87171;
+      --danger-dim: #f8717122;
+      --radius: 10px;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* Layout */
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 40px;
+    }
+
+    .logo-icon {
+      width: 40px; height: 40px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-icon svg { width: 22px; height: 22px; fill: #0f0f11; }
+
+    .header-text h1 {
+      font-family: 'DM Mono', monospace;
+      font-size: 22px;
+      font-weight: 500;
+      letter-spacing: -0.5px;
+    }
+
+    .header-text p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Save bar */
+    .save-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 100;
+    }
+
+    .save-msg {
+      font-size: 13px;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .save-msg.success { color: var(--accent); }
+    .save-msg.error { color: var(--danger); }
+
+    .save-btn {
+      padding: 10px 24px;
+      background: var(--accent);
+      color: #0f0f11;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .save-btn:hover { opacity: 0.88; }
+
+    /* Section */
+    .section {
+      margin-bottom: 36px;
+    }
+
+    .section-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .grid.single { grid-template-columns: 1fr; }
+
+    /* Field */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field.span2 { grid-column: span 2; }
+
+    label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.2px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="url"],
+    textarea {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      resize: vertical;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--border-focus);
+      background: var(--surface2);
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: var(--muted);
+      opacity: 0.6;
+    }
+
+    textarea { min-height: 80px; }
+    textarea.tall { min-height: 120px; }
+
+    /* Custom fields */
+    .custom-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .custom-row {
+      display: grid;
+      grid-template-columns: 1fr 2fr auto;
+      gap: 8px;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      transition: border-color 0.2s;
+    }
+
+    .custom-row:focus-within {
+      border-color: var(--border-focus);
+    }
+
+    .custom-row input {
+      background: transparent;
+      border: none;
+      padding: 2px 0;
+      font-size: 13px;
+    }
+
+    .custom-row input:focus {
+      background: transparent;
+      border: none;
+    }
+
+    .custom-sep {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      padding: 4px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .remove-btn:hover {
+      color: var(--danger);
+      background: var(--danger-dim);
+    }
+
+    .add-field-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      padding: 9px 16px;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+
+    .add-field-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .custom-label-hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    @media (max-width: 560px) {
+      .grid { grid-template-columns: 1fr; }
+      .field.span2 { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+        </svg>
+      </div>
+      <div class="header-text">
+        <h1>JobFill</h1>
+        <p>Your profile data — used to autofill job applications</p>
+      </div>
+    </div>
+
+    <!-- Personal Info -->
+    <div class="section">
+      <div class="section-title">Personal</div>
+      <div class="grid">
+        <div class="field">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" placeholder="Laura" />
+        </div>
+        <div class="field">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" placeholder="Müller" />
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="laura@example.com" />
+        </div>
+        <div class="field">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" placeholder="+49 151 0000 0000" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Address -->
+    <div class="section">
+      <div class="section-title">Address</div>
+      <div class="grid">
+        <div class="field span2">
+          <label for="address">Street Address</label>
+          <input type="text" id="address" placeholder="Musterstraße 12" />
+        </div>
+        <div class="field">
+          <label for="city">City</label>
+          <input type="text" id="city" placeholder="Berlin" />
+        </div>
+        <div class="field">
+          <label for="state">State / Region</label>
+          <input type="text" id="state" placeholder="Berlin" />
+        </div>
+        <div class="field">
+          <label for="zipCode">ZIP / Postal Code</label>
+          <input type="text" id="zipCode" placeholder="10115" />
+        </div>
+        <div class="field">
+          <label for="country">Country</label>
+          <input type="text" id="country" placeholder="Germany" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Online Presence -->
+    <div class="section">
+      <div class="section-title">Online</div>
+      <div class="grid">
+        <div class="field">
+          <label for="linkedin">LinkedIn URL</label>
+          <input type="url" id="linkedin" placeholder="https://linkedin.com/in/yourname" />
+        </div>
+        <div class="field">
+          <label for="website">Website / Portfolio</label>
+          <input type="url" id="website" placeholder="https://yoursite.com" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Background -->
+    <div class="section">
+      <div class="section-title">Background</div>
+      <div class="grid single">
+        <div class="field">
+          <label for="experience">Work Experience</label>
+          <textarea id="experience" class="tall" placeholder="e.g. 3 years as a Computer Vision Engineer at XYZ GmbH..."></textarea>
+        </div>
+        <div class="field">
+          <label for="education">Education</label>
+          <textarea id="education" placeholder="e.g. M.Sc. Computer Science, TU Berlin, 2025"></textarea>
+        </div>
+        <div class="field">
+          <label for="summary">Summary / Cover Letter Opener</label>
+          <textarea id="summary" class="tall" placeholder="Brief statement about yourself for 'About You' or summary fields..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Fields -->
+    <div class="section">
+      <div class="section-title">Custom Fields</div>
+      <div class="custom-list" id="customList"></div>
+      <p class="custom-label-hint">The label should match what the form field is called — e.g. "Desired Salary", "Languages", "Start Date".</p>
+      <br/>
+      <button class="add-field-btn" id="addFieldBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add custom field
+      </button>
+    </div>
+  </div>
+
+  <!-- Save Bar -->
+  <div class="save-bar">
+    <span class="save-msg" id="saveMsg"></span>
+    <button class="save-btn" id="saveBtn">Save Profile</button>
+  </div>
+
+  <script src="profile.js"></script>
+</body>
+</html>
